@@ -45,7 +45,6 @@ seq_type_dict = {
                 'exome_seq': {'coverage' : exome_coverage, 'mapping' : exome_mapping}
                 }
 
-
 #iterate through the seq types
 for seq in seq_type:
 
@@ -57,8 +56,8 @@ for seq in seq_type:
 
         #make 2 dict writer objects each time
         #write fieldnames 
-        mapping_writer = csv.DictWriter(f1, fieldnames = dict.fromkeys(c.DICT_FIELDNAME_REF[seq]['MAPPING/ALIGNING SUMMARY'].values()), delimiter=',')
-        coverage_writer = csv.DictWriter(f2, fieldnames = dict.fromkeys(c.DICT_FIELDNAME_REF[seq]['COVERAGE SUMMARY'].values()), delimiter=',')
+        mapping_writer = csv.DictWriter(f1, fieldnames = dict.fromkeys(c.XXXX_DICT_FIELDNAME_REF[seq]['MAPPING/ALIGNING SUMMARY'].values()), delimiter=',')
+        coverage_writer = csv.DictWriter(f2, fieldnames = dict.fromkeys(c.XXXX_DICT_FIELDNAME_REF[seq]['COVERAGE SUMMARY'].values()), delimiter=',')
 
         #write header row
         mapping_writer.writeheader() 
@@ -78,6 +77,8 @@ for seq in seq_type:
                         
                         #open the file
                         with open(file, 'r') as f:
+
+                            f_reader = csv.reader(f, delimiter=',')
                             
                             #get the sample name
                             sample = os.path.basename(file).split('.')[-3]
@@ -91,10 +92,10 @@ for seq in seq_type:
                             # file_data['COVERAGE SUMMARY'][sample]['Work Order'] = work_order
 
                             #iterate through the lines in the file
-                            for l in f:
+                            for line in f_reader:
 
                                 #split the line into a list
-                                line = l.split(',')
+                                # line = l.split(',')
 
                                 #strip the whitespace from the 2nd index position of the list
                                 line[2] = line[2].replace(' ', '')
@@ -114,14 +115,19 @@ for seq in seq_type:
                                     value = line[2].strip()            
                                     value_fieldname = coverage_fieldnames_dict.get(value)
                                     
-                                    if value_fieldname == '% Aligned bases genome' or value_fieldname == '% Aligned reads genome':
+                                    if value_fieldname == '% Aligned bases genome' or value_fieldname == '% Aligned reads genome' or value_fieldname == '% Aligned bases in QC region' or value_fieldname == '% On Target':
 
                                         file_data['COVERAGE SUMMARY'][sample][value_fieldname] = float(line[4])
                                         continue
                                     
                                     continue
 
-                        # print('coverage_data: ', file_data)
+                            if None in file_data['COVERAGE SUMMARY'][sample].keys():
+                                print('file', file)
+
+                        print('coverage_data: ', file_data)
+                        # write rows to the csv file
+                        coverage_writer.writerow(file_data['COVERAGE SUMMARY'][sample])
 
                 if key == 'mapping':
 
@@ -188,19 +194,12 @@ for seq in seq_type:
                                         file_data[line[0]][sample][percent_fieldname] = line[4]
 
                                         continue
-
-                        # print('mapping_data: ', file_data)
-                        
-                        # print('dictionary as gollows')
-                        # for k,v in file_data['MAPPING/ALIGNING SUMMARY'][sample].items():
-                        #     print(k,v)
                             
+                                if None in file_data['MAPPING/ALIGNING SUMMARY'][sample].keys():
+                                    print('file', file)
 
-    # write rows
-    # print('Writing rows to csv files...')
-    
-    # for sample in combined_data['MAPPING/ALIGNING SUMMARY']:
-    #     mapping_writer.writerow(combined_data['MAPPING/ALIGNING SUMMARY'][sample])
-
-    # for sample in combined_data['COVERAGE SUMMARY']:
-    #     coverage_writer.writerow(combined_data['COVERAGE SUMMARY'][sample])
+                            print('mapping_data: ', file_data)
+                            # write rows to csv files  
+                            mapping_writer.writerow(file_data['MAPPING/ALIGNING SUMMARY'][sample])
+                                        
+    print('Finished writing to csv files...')
