@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import os
@@ -50,7 +49,7 @@ seq_type_dict = {
 #iterate through the seq types
 for seq in seq_type:
 
-    with open (f'{seq}_mapping.csv', 'w') as f1, open (f'{seq}_coverage.csv', 'w') as f2:
+    with open (f'dragen_scraper_metrics/{seq}_mapping.csv', 'w') as f1, open (f'dragen_scraper_metrics/{seq}_coverage.csv', 'w') as f2:
         
         #make the fieldnames    
         mapping_fieldnames_dict = c.XXXX_DICT_FIELDNAME_REF[seq]['MAPPING/ALIGNING SUMMARY']

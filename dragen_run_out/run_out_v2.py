@@ -33,7 +33,7 @@ seq_type = [
 #iterate through the seq types
 for seq in seq_type:
 
-    with open (f'{seq}_mapping.csv', 'w') as f1, open (f'{seq}_coverage.csv', 'w') as f2:
+    with open (f'run_out_metrics/{seq}_mapping.csv', 'w') as f1, open (f'run_out_metrics/{seq}_coverage.csv', 'w') as f2:
 
         #make the fieldnames    
         mapping_fieldnames_dict = c.DICT_FIELDNAME_REF[seq]['MAPPING/ALIGNING SUMMARY']
